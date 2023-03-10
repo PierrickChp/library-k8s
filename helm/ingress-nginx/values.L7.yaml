@@ -1,0 +1,21 @@
+# Default values are available here: https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
+
+# Default is L4, possible values are L4 and L7
+loadBalancerType: L7
+
+# ✏️ Specify the load balancer IP address' resource name (can only be a global IP address)
+# Set to null to create an ephemeral IP address
+loadBalancerIPName: null
+
+# ✏️ k8s secret with tls cert to use for HTTPS
+# If null only HTTP is supported
+tlsSecret: null
+
+ingress-nginx:
+  controller:
+    service:
+      type: NodePort
+      externalTrafficPolicy: Local
+      annotations:
+        cloud.google.com/app-protocols: '{"http":"HTTP", "https":"HTTPS"}'
+        cloud.google.com/backend-config: '{"default": "ingress-nginx-controller"}'

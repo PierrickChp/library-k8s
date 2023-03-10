@@ -1,0 +1,7 @@
+site_name: kubernetes-gcp-starter
+
+repo_name: padok-team/library-kubernetes-gcp-starter
+repo_url: https://github.com/padok-team/library-kubernetes-gcp-starter
+
+plugins:
+  - techdocs-core

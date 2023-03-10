@@ -1,0 +1,43 @@
+# Default values are available here: https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/values.yaml
+
+# ✏️ GCP projectID
+projectID: padok-argocd-factory
+# ✏️ Cluster location (region or zone)
+clusterLocation: europe-west3
+# ✏️ Cluster name
+clusterName: main
+
+external-secrets:
+  # TODO: adjust limits
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 256Mi
+
+  certController:
+    # TODO: adjust limits
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 256Mi
+
+  webhook:
+    # TODO: adjust limits
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 256Mi
+
+  serviceAccount:
+    annotations:
+      # ✏️ Specify the service account to use by External Secrets
+      iam.gke.io/gcp-service-account: external-secrets@padok-argocd-factory.iam.gserviceaccount.com
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: external-secrets

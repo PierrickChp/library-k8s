@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: .
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argocd
+    name: in-cluster
+  project: default
+  source:
+    # ✏️ Your repository URL
+    repoURL: git@github.com:padok-team/library-kubernetes-gcp-starter.git
+    targetRevision: HEAD
+    path: helm/argocd
+    helm:
+      valueFiles:
+        - "values.yaml"
+        # ✏️ Add "values.ingress.yaml" to add an ingress to argocd
+        # - "values.ingress.yaml"
+        # ✏️ Add "values.iap.yaml" to use IAP with ArgoCD (requires "values.iap.yaml")
+        # - "values.iap.yaml"
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

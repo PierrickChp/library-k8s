@@ -1,0 +1,51 @@
+# Values: https://github.com/kyverno/kyverno/blob/main/charts/kyverno-policies/values.yaml
+
+# Severity for each custom policy (eg. in templates), default to medium
+severity: {}
+#  require-requests-limits: medium
+
+# validationFailureAction for each custom policy (eg. in templates), default to audit
+validationFailureAction: {}
+# Add this to enforce requiring requests and limits on pods
+#  require-requests-limits: enforce
+
+# Values for kyverno defined policies
+kyverno-policies:
+  policyExclude:
+    disallow-host-path:
+      any:
+        - resources:
+            kinds:
+              - DaemonSet
+            namespaces:
+              - monitoring
+            names:
+              - prometheus-stack-prometheus-node-exporter
+    disallow-host-ports:
+      any:
+        - resources:
+            kinds:
+              - DaemonSet
+            namespaces:
+              - monitoring
+            names:
+              - prometheus-stack-prometheus-node-exporter
+    disallow-host-namespaces:
+      any:
+        - resources:
+            kinds:
+              - DaemonSet
+            namespaces:
+              - monitoring
+            names:
+              - prometheus-stack-prometheus-node-exporter
+
+  # Uncomment to enforce the policies that disallow patterns equivalent to giving root privileges to pods
+  # validationFailureActionByPolicy:
+  #   disallow-capabilities: enforce
+  #   disallow-host-namespaces: enforce
+  #   disallow-host-path: enforce
+  #   disallow-host-ports: enforce
+  #   disallow-host-process: enforce
+  #   disallow-privileged-containers: enforce
+  #   disallow-proc-mount: enforce

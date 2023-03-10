@@ -1,0 +1,18 @@
+# Default values are available here: https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
+
+# Default is L4, possible values are L4 and L7
+loadBalancerType: L4
+
+ingress-nginx:
+  controller:
+    service:
+      # ✏️ Specify the load balancer IP address (or set it to null for an ephemeral IP)
+      loadBalancerIP: null
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 250Mi
+      limits:
+        cpu: 100m
+        memory: 250Mi

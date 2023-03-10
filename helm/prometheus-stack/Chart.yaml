@@ -1,0 +1,13 @@
+---
+apiVersion: v2
+name: prometheus-stack
+description: A Padok-standard deployment of the Prometheus stack.
+type: application
+version: 40.5.0
+dependencies:
+# When upgrading this dependency, don't forget to check the changelog
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#upgrading-chart
+# and to also upgrade the Argo App in `apps/prometheus-stack.yaml`
+  - name: kube-prometheus-stack
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 40.5.0

@@ -1,0 +1,41 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: ingress-nginx-iap
+spec:
+  iap:
+    enabled: true
+    oauthclientCredentials:
+      secretName: iap-secret
+  healthCheck:
+    requestPath: /healthz
+    type: HTTPS
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: ingress-nginx-iap
+spec:
+  redirectToHttps:
+    enabled: true
+  sslPolicy: modern
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx-iap
+  annotations:
+    kubernetes.io/ingress.class: gce
+    {{- if .Values.loadBalancerIPName }}
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.loadBalancerIPName }}
+    {{- end }}
+    ingress.kubernetes.io/ssl-redirect: "true"
+    networking.gke.io/v1beta1.FrontendConfig: ingress-nginx-iap
+spec:
+  defaultBackend:
+    service:
+      name: ingress-nginx-iap-controller
+      port:
+        name: https
+  tls:
+    - secretName: iap-tls

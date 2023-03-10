@@ -1,0 +1,19 @@
+# Values: https://github.com/kyverno/kyverno/tree/main/charts/kyverno/values.yaml
+
+kyverno:
+  # ✏️ Uncomment this line to install Kyverno with high availability
+  # replicaCount: 3
+
+  # ⚠️ Do not remove this!!!
+  # Prevents kyverno and k8s system namespaces from being impacted by potential Kyverno indisp.
+  config:
+    webhooks:
+      - namespaceSelector:
+          matchExpressions:
+            - key: kubernetes.io/metadata.name
+              operator: NotIn
+              values:
+                - kube-system
+                - kube-node-lease
+                - kube-public
+                - kyverno

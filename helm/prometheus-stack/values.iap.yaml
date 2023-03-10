@@ -1,0 +1,31 @@
+# Add these values to the default ones when deploying the Prometheus stack with IAP authentication on Grafana
+# Default values: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+
+kube-prometheus-stack:
+  grafana:
+    ingress:
+      ingressClassName: iap
+      annotations:
+        cert-manager.io/cluster-issuer: ""
+      tls: []
+
+    grafana.ini:
+      auth:
+        # Disable the username / password login form.
+        disable_login_form: true
+      # Disable basic username / password authentication.
+      auth.basic:
+        enabled: false
+      # Enable proxy authentication with user identification by email.
+      auth.proxy:
+        enabled: true
+        header_name: X-Goog-Authenticated-User-Email
+        header_property: email
+        auto_sign_up: true
+      users:
+        # Disable sign up as the accounts are managed with OAuth2.
+        allow_sign_up: false
+        # Automatically assign the Admin role to any user authenticated with OAuth2.
+        # TODO : check how to set up low permissions
+        auto_assign_org: true
+        auto_assign_org_role: Admin

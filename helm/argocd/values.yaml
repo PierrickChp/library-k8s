@@ -1,0 +1,77 @@
+# Default values: https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml
+
+# ✏️ Your repository URL
+repoURL: git@github.com:padok-team/library-kubernetes-gcp-starter.git
+
+argo-cd:
+  ## Dexs
+  dex:
+    resources:
+      # TODO use grafana to adjust limits
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+  ## Redis
+  redis:
+    # TODO use grafana to adjust limits
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+  ## Application Set
+  applicationSet:
+    enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+  ## Notification
+  notifications:
+    enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+  ## ArgoCD Server
+  server:
+    # TODO use grafana to adjust limits
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 150m
+        memory: 256Mi
+
+    ingress:
+      enabled: false
+
+  controller:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+
+  repoServer:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 10m
+        memory: 64Mi

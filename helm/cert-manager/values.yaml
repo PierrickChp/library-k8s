@@ -1,0 +1,55 @@
+# Default values: https://github.com/jetstack/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+
+# Certificate validation
+validation:
+  # Default is http, possible values are http and dns
+  type: http
+  # ✏️ Ingress class to use for HTTP validation
+  ingressClass: nginx
+
+# ✏️ GCP project id
+project: padok-argocd-factory
+
+# ✏️ Acme email
+acmeEmail: team@padok.fr
+
+cert-manager:
+  installCRDs: true
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+  webhook:
+    # TODO : adjust limits
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+
+  cainjector:
+    # TODO : adjust limits
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+
+startupapicheck:
+    # TODO : adjust limits
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi

@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno-policies
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: .
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: kyverno
+    name: in-cluster
+  source:
+    # ✏️ Your repository URL
+    repoURL: git@github.com:padok-team/library-kubernetes-gcp-starter.git
+    targetRevision: HEAD
+    path: helm/kyverno-policies/
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    # Kyverno auto-generates rules to make policies smarter.
+    # ArgoCD needs to ignore auto-generated rules not to reverse changes made by kyverno.
+    # For more information: https://kyverno.io/docs/writing-policies/autogen/
+    - group: kyverno.io
+      kind: ClusterPolicy
+      jqPathExpressions:
+        - .spec.rules[] | select(.name | startswith("autogen-"))

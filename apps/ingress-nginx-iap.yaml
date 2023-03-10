@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx-iap
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: .
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: system
+  destination:
+    namespace: ingress-nginx
+    name: in-cluster
+  source:
+    # ✏️ Your repository URL
+    repoURL: git@github.com:padok-team/library-kubernetes-gcp-starter.git
+    targetRevision: HEAD
+    path: helm/ingress-nginx-iap/
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

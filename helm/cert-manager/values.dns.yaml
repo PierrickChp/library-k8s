@@ -1,0 +1,14 @@
+# Default values: https://github.com/jetstack/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+
+# Certificate validation
+validation:
+  # Default is http, possible values are http and dns
+  type: dns
+
+cert-manager:
+  # cert-manager service account to edit DNS entries
+  serviceAccount:
+    annotations:
+      # ✏️ Service account email
+      iam.gke.io/gcp-service-account: cert-manager@padok-argocd-factory.iam.gserviceaccount.com
+    name: cert-manager

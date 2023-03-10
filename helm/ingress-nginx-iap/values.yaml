@@ -1,0 +1,39 @@
+# ✏️ Specify the load balancer IP address' resource name (can only be a global IP address)
+# Set to null to create an ephemeral IP address
+loadBalancerIPName: null
+
+iapConfig:
+  # ✏️ Name of the secret with the id of the IAP application
+  id: iap-id
+  # ✏️ Name of the secret with the secret of the IAP application
+  secret: iap-secret
+
+# ✏️ hostnames the IAP Ingress-NGINX Controller will manage
+hosts:
+  - argocd.gcp.library.padok.cloud
+  - grafana.gcp.library.padok.cloud
+
+ingress-nginx:
+  controller:
+    service:
+      type: ClusterIP
+      annotations:
+        cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+        cloud.google.com/backend-config: '{"default": "ingress-nginx-iap"}'
+        cloud.google.com/neg: '{"ingress": true}'
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 250Mi
+      limits:
+        cpu: 100m
+        memory: 250Mi
+
+    electionID: iap
+
+    ingressClassResource:
+      name: iap
+      controllerValue: "k8s.io/ingress-nginx-iap"
+
+    ingressClass: iap

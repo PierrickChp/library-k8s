@@ -1,0 +1,9 @@
+apiVersion: v2
+name: cert-manager
+description: A Padok-standard deployment of cert-manager.
+type: application
+version: 1.8.2
+dependencies:
+  - name: cert-manager
+    repository: https://charts.jetstack.io
+    version: v1.8.2

@@ -1,0 +1,32 @@
+# Default values: https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml
+argo-cd:
+  server:
+    ingress:
+      ingressClassName: iap
+
+      annotations:
+        cert-manager.io/cluster-issuer: ""
+        nginx.ingress.kubernetes.io/backend-protocol: HTTP
+
+      tls: []
+    
+    # 🚧 This argument is important to tell ArgoCD not to expect a HTTPS connection
+    # The HTTPS negociation is made with the IAP LB which proxifies the traffic
+    extraArgs:
+      - --insecure
+
+    config:
+      # ✏️ Specify ArgoCD's URL
+      url: https://argocd.gcp.library.padok.cloud
+      # Dex is configured with the authproxy connector
+      dex.config: |
+        connectors:
+          - type: authproxy
+            id: iap
+            name: IAP
+            config:
+              userHeader: "X-Goog-Authenticated-User-Email"
+    
+    rbacConfig:
+      # Gives admin rights to users by default
+      policy.default: 'role:admin'

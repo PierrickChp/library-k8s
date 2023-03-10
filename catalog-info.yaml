@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: kubernetes-gcp-starter
+  description: Kubernetes GCP Starter
+  tags:
+    - "kubernetes"
+    - "helm"
+    - "google"
+  annotations:
+    github.com/project-slug: padok-team/library-kubernetes-gcp-starter
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: chart
+  system: helm
+  owner: library-kubernetes
+  lifecycle: experimental

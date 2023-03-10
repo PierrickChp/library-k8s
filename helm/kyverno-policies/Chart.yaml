@@ -1,0 +1,9 @@
+apiVersion: v2
+name: kyverno-policies
+description: Kubernetes Pod Security Standards implemented as Kyverno policies
+type: application
+version: v1.7.3
+dependencies:
+- name: kyverno-policies
+  repository: https://kyverno.github.io/kyverno/
+  version: v2.5.5

@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: .
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: kyverno
+    name: in-cluster
+  source:
+    # ✏️ Your repository URL
+    repoURL: git@github.com:padok-team/library-kubernetes-gcp-starter.git
+    targetRevision: HEAD
+    path: helm/kyverno/
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

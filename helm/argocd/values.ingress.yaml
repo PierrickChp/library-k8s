@@ -1,0 +1,28 @@
+# Default values: https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml
+argo-cd:
+  server:
+    ingress:
+      enabled: true
+
+      # ✏️ Ingress class to use
+      ingressClassName: nginx
+
+      annotations:
+        # cert-manager will use this issuer to generate a certificate for this
+        # ingress.
+        cert-manager.io/cluster-issuer: letsencrypt
+
+        # The ArgoCD server expects requests to be encrypted.
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+
+      # ✏️ Specify the host for ArgoCD
+      hosts:
+        - "argocd.gcp.library.padok.cloud"
+
+      tls:
+        # ✏️ Specify the TLS host for ArgoCD
+        - hosts:
+            - "argocd.gcp.library.padok.cloud"
+
+          # Cert-manager stores the created certificate in this secret.
+          secretName: argocd-gcp-library-padok-cloud-tls

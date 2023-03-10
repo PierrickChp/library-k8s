@@ -1,0 +1,205 @@
+# Default values: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+
+kube-prometheus-stack:
+  # GKE Clusters with plan v2 uses KubeDNS instead of CoreDNS
+  coreDns:
+    enabled: false
+  kubeDns:
+    enabled: true
+  ## Component scraping the kube controller manager
+  ## => Disabled as GPC is handling this
+  kubeControllerManager:
+    enabled: false
+  ## Component scraping kube scheduler
+  ## => Disabled as GPC is handling this
+  kubeScheduler:
+    enabled: false
+
+  kube-state-metrics:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 64Mi
+  prometheus-node-exporter:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 30Mi
+      limits:
+        cpu: 200m
+        memory: 50Mi
+  prometheusOperator:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 250m
+        memory: 250Mi
+
+  # ==============================================================================
+  # Prometheus
+  # ==============================================================================
+
+  prometheus:
+    # ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    prometheusSpec:
+      # ref: https://github.com/prometheus-operator/prometheus-operator/blob/release-0.44/pkg/prometheus/promcfg.go#L180-L183
+      scrapeInterval: 15s
+
+      # Watch all PrometheusRules in the cluster.
+      ruleNamespaceSelector:
+        matchLabels: {}
+      ruleSelector:
+        matchLabels: {}
+
+      # Watch all ServiceMonitors in the cluster.
+      serviceMonitorNamespaceSelector:
+        matchLabels: {}
+      serviceMonitorSelector:
+        matchLabels: {}
+
+      # Watch all PodMonitors in the cluster.
+      podMonitorSelector:
+        matchLabels: {}
+      podMonitorNamespaceSelector:
+        matchLabels: {}
+
+      retention: 30d
+
+      # Keep in mind that Prometheus uses large amounts of memory when scraping
+      # a large number of targets.
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+
+      # ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ['ReadWriteOnce']
+            resources:
+              requests:
+                storage: 50Gi
+
+  # ==============================================================================
+  # Grafana
+  # Default values: https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+  # ==============================================================================
+
+  grafana:
+    admin:
+      existingSecret: grafana-credentials
+      userKey: admin-user
+      passwordKey: admin-password
+
+    defaultDashboardsTimezone: Europe/Paris
+
+    # Required as long as Grafana's persistent volume is ReadWriteOnce.
+    # During a rolling update, the new Grafana pod would not be able to start
+    # while the old pod still holds the volume.
+    deploymentStrategy:
+      type: Recreate
+
+    ingress:
+      enabled: true
+
+      # ⚠️ Change this 👇, specify your ingress controller's class.
+      ingressClassName: nginx
+
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+
+      hosts:
+        # ⚠️ Change this 👇, specify your own hostname.
+        - grafana.your.domain.fr
+      tls:
+        - secretName: grafana-general-tls
+          hosts:
+            # ⚠️ Change this 👇, specify the same hostname as above.
+            - grafana.your.domain.fr
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+    initChownData:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 150m
+          memory: 256Mi
+    sidecar:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 50Mi
+        limits:
+          cpu: 100m
+          memory: 100Mi
+
+    # Organise dashboards by provider, with the provider's name as the key.
+    dashboards:
+      default: # The "default" provider is defined below.
+        nginx-ingress-controller:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.48.1/deploy/grafana/dashboards/nginx.json
+        ingress-request-performance:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.48.1/deploy/grafana/dashboards/request-handling-performance.json
+
+    # Configure dashboard providers.
+    # ref: http://docs.grafana.org/administration/provisioning/#dashboards
+    # `path` must be /var/lib/grafana/dashboards/<provider_name>
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: default
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            allowUiUpdates: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+
+    persistence:
+      enabled: true
+      size: 10Gi
+
+  # ==============================================================================
+  # Alertmanager
+  # ref: https://prometheus.io/docs/alerting/alertmanager/
+  # ==============================================================================
+
+  alertmanager:
+    # ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#alertmanagerspec
+    alertmanagerSpec:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 32Mi
+        limits:
+          cpu: 1000m
+          memory: 64Mi
+
+      # ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md
+      storage:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ['ReadWriteOnce']
+            resources:
+              requests:
+                storage: 10Gi
