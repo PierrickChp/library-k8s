@@ -5,7 +5,7 @@ projectID: padok-argocd-factory
 # ✏️ Cluster location (region or zone)
 clusterLocation: europe-west3
 # ✏️ Cluster name
-clusterName: main
+clusterName: e2e-test
 
 external-secrets:
   # TODO: adjust limits

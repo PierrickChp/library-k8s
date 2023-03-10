@@ -14,7 +14,7 @@ spec:
   project: default
   source:
     # ✏️ Your repository URL
-    repoURL: git@github.com:padok-team/library-kubernetes-gcp-starter.git
+    repoURL: git@github.com:PierrickChp/library-k8s.git
     targetRevision: HEAD
     path: helm/argocd
     helm:
